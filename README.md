@@ -1,93 +1,93 @@
-# Date Restorer (File Date Restoration Tool)
+# Restaurador de Datas (Ferramenta de Restauração de Data de Arquivos)
 
-This Python script identifies and restores the creation and modification dates of media files based on date/time patterns found in their filenames.
+Este script Python identifica e restaura as datas de criação e modificação de arquivos de mídia baseado nos padrões de data/hora encontrados em seus nomes.
 
-> [Leia esta documentação em Português](README.pt.md)
+> [Read this documentation in English](README.md)
 
-## Usage
-
-```bash
-python script.py <folder> [options]
-```
-
-Where `script.py` is the filename of this tool (default is `date_restorer.py`)
-
-### Options
-
-- `-s`, `--dry-run`: Run in simulation mode (does not modify files)
-- `-v`, `--verbose`: Show detailed information during processing
-- `-e`, `--ext`: List of file extensions to process (ex: jpg png mp4)
-- `--log`: Set logging detail level (DEBUG, INFO, WARNING, ERROR)
-- `--ignore-text`: Ignore common text files (.txt, .md, .py, etc.)
-
-### Examples
+## Uso
 
 ```bash
-# Process all files in the 'photos' folder and its subfolders
-python script.py ./photos
-
-# Simulate processing without changing files
-python script.py ./photos --dry-run
-
-# Process only JPG and PNG files with detailed logging
-python script.py ./photos --ext jpg png --verbose
-
-# Run with debug logging
-python script.py ./photos --log DEBUG
-
-# Ignore text files and process only media files
-python script.py ./photos --ignore-text
+python script.py <pasta> [opções]
 ```
 
-Where `script.py` is the name of this script, regardless of how you rename it.
+Onde `script.py` é o nome do arquivo desta ferramenta (o padrão é `date_restorer.py`)
 
-## Adding New Filename Patterns
+### Opções
 
-To add support for additional filename patterns:
+- `-s`, `--dry-run`: Executa em modo de simulação (não altera os arquivos)
+- `-v`, `--verbose`: Mostra informações detalhadas durante o processamento
+- `-e`, `--ext`: Lista de extensões de arquivo para processar (ex: jpg png mp4)
+- `--log`: Define o nível de detalhes do log (DEBUG, INFO, WARNING, ERROR)
+- `--ignore-text`: Ignora arquivos de texto comuns (.txt, .md, .py, etc.)
 
-1. Open the script file and find the `extract_date()` function
-2. Follow the template provided in the function's docstring
-3. Add your new pattern with a regex that captures date/time components
-4. Use try/except to handle potential parsing errors
-5. Return a tuple with (datetime_object, explanation_string)
+### Exemplos
 
-Example template for adding a new pattern:
+```bash
+# Processar todos os arquivos na pasta 'fotos' e suas subpastas
+python script.py ./fotos
+
+# Simular o processamento sem alterar arquivos
+python script.py ./fotos --dry-run
+
+# Processar apenas arquivos JPG e PNG com log detalhado
+python script.py ./fotos --ext jpg png --verbose
+
+# Executar com log de depuração
+python script.py ./fotos --log DEBUG
+
+# Ignorar arquivos de texto e processar apenas arquivos de mídia
+python script.py ./fotos --ignore-text
+```
+
+Onde `script.py` é o nome deste script, independente de como você o renomeie.
+
+## Adicionando Novos Padrões de Nome de Arquivo
+
+Para adicionar suporte para padrões adicionais de nomes de arquivo:
+
+1. Abra o script e encontre a função `extract_date()`
+2. Siga o modelo fornecido no docstring da função
+3. Adicione seu novo padrão com uma regex que captura componentes de data/hora
+4. Use try/except para lidar com possíveis erros de análise
+5. Retorne uma tupla com (objeto_datetime, string_explicacao)
+
+Exemplo de modelo para adicionar um novo padrão:
 
 ```python
-# Pattern X: DESCRIPTION_OF_PATTERN (e.g., Camera_YYYYMMDD.jpg)
-m = re.search(r'YOUR_REGEX_PATTERN_HERE', filename)
+# Padrão X: DESCRIÇÃO_DO_PADRÃO (ex., Camera_YYYYMMDD.jpg)
+m = re.search(r'SEU_PADRÃO_REGEX_AQUI', filename)
 if m:
     try:
-        # Extract date components from regex groups
-        # Convert to datetime object
-        dt = datetime.strptime(date_string, 'format_string')
-        return dt, f"explanation string with {captured_values}"
+        # Extrair componentes de data dos grupos regex
+        # Converter para objeto datetime
+        dt = datetime.strptime(string_data, 'string_formato')
+        return dt, f"string de explicação com {valores_capturados}"
     except ValueError:
         pass
 ```
 
-## Recognized File Patterns
+## Padrões de Arquivos Reconhecidos
 
-The script identifies various common filename formats:
+O script identifica vários formatos comuns de nomes de arquivos:
 
-- Digital cameras: `20181128_110755.jpg`, `IMG_20180507_192217158.jpg`
+- Câmeras digitais: `20181128_110755.jpg`, `IMG_20180507_192217158.jpg`
 - WhatsApp: `WhatsApp Image 2018-11-27 at 18.41.02.png`, `IMG-20181225-WA0014.jpg`
 - Screenshots: `Screenshot_20200101-151016_Calendar.jpg`
-- Unix timestamps: `FB_IMG_1545742864733.jpg`
-- And many other common patterns from smartphones and cameras
+- Timestamps Unix: `FB_IMG_1545742864733.jpg`
+- E vários outros padrões comuns de smartphones e câmeras
 
-## Requirements
+## Requisitos
 
-Python 3.6 or higher.
+Python 3.6 ou superior.
 
-## Example Files
+## Arquivos de Exemplo
 
-The `examples/` directory contains sample image and video files with different naming patterns that you can use to test the script. Run the script on this directory to see how it identifies and processes various date formats:
+O diretório `examples/` contém arquivos de exemplo de imagem e vídeo com diferentes padrões de nomeação que você pode usar para testar o script. Execute o script neste diretório para ver como ele identifica e processa vários formatos de data:
 
 ```bash
 python date_restorer.py --dry-run ./examples
 ```
 
-## License
+## Licença
 
 MIT License
