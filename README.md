@@ -88,6 +88,39 @@ O diretório `examples/` contém arquivos de exemplo de imagem e vídeo com dife
 python date_restorer.py --dry-run ./examples
 ```
 
+## Testes
+
+O projeto inclui um conjunto completo de testes automatizados para validar o funcionamento do script com diferentes padrões de nomes de arquivo. Os testes estão no arquivo `test_date_restorer.py`.
+
+### Executando os Testes
+
+```bash
+# Executar todos os testes (manuais e unitários)
+python test_date_restorer.py
+
+# Executar apenas os testes manuais com saída formatada
+python test_date_restorer.py --manual
+
+# Executar apenas os testes unitários
+python test_date_restorer.py --unittest
+```
+
+### Tipos de Testes
+
+1. **Testes Manuais**: Exibem uma saída formatada de todos os padrões de arquivo suportados e não suportados, facilitando a visualização rápida do que está funcionando.
+2. **Testes Unitários**: Verificam sistematicamente cada padrão de reconhecimento e caso de falha, garantindo que o script funcione conforme esperado.
+
+Os testes cobrem:
+- Todos os 9 padrões de nome de arquivo suportados
+- Validação de timestamps válidos e inválidos
+- Limites temporais (desde a era Unix até a data atual)
+- Casos que não devem ser reconhecidos (como IDs de mídias sociais)
+- Normalização de dígitos unicode
+
+### Adicionando Novos Testes
+
+Se você adicionar suporte para novos padrões de nome de arquivo, é recomendado também adicionar testes correspondentes no arquivo `test_date_restorer.py`. Siga o modelo de teste existente para adicionar novos casos de teste.
+
 ## Licença
 
 MIT License

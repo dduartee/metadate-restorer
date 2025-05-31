@@ -88,6 +88,39 @@ The `examples/` directory contains sample image and video files with different n
 python date_restorer.py --dry-run ./examples
 ```
 
+## Tests
+
+The project includes a comprehensive set of automated tests to validate the script's behavior with different filename patterns. The tests are in the `test_date_restorer.py` file.
+
+### Running the Tests
+
+```bash
+# Run all tests (manual and unit tests)
+python test_date_restorer.py
+
+# Run only the manual tests with formatted output
+python test_date_restorer.py --manual
+
+# Run only the unit tests
+python test_date_restorer.py --unittest
+```
+
+### Test Types
+
+1. **Manual Tests**: Display a formatted output of all supported and unsupported file patterns, making it easy to quickly visualize what's working.
+2. **Unit Tests**: Systematically verify each recognition pattern and failure case, ensuring the script works as expected.
+
+The tests cover:
+- All 9 supported filename patterns
+- Validation of valid and invalid timestamps
+- Temporal limits (from Unix epoch to current date)
+- Cases that should not be recognized (such as social media IDs)
+- Unicode digit normalization
+
+### Adding New Tests
+
+If you add support for new filename patterns, it's recommended to also add corresponding tests in the `test_date_restorer.py` file. Follow the existing test model to add new test cases.
+
 ## License
 
 MIT License

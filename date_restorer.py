@@ -90,7 +90,18 @@ def extract_date(filename):
         except ValueError:
             pass
             
-    # Pattern 2: WhatsApp Image 2018-11-27 at 18.41.02.png
+    # Pattern 2A: 2020-01-01 12.30.59.jpg (format with date and time separated) - MOVED UP for precedence
+    m = re.search(r'(\d{4})-(\d{2})-(\d{2}) (\d{2})\.(\d{2})\.(\d{2})', filename)
+    if m:
+        try:
+            date_part = f"{m.group(1)}{m.group(2)}{m.group(3)}"
+            time_part = f"{m.group(4)}{m.group(5)}{m.group(6)}"
+            dt = datetime.strptime(date_part + time_part, '%Y%m%d%H%M%S')
+            return dt, f"{date_part} {time_part}"
+        except ValueError:
+            pass
+            
+    # Pattern 2B: WhatsApp Image 2018-11-27 at 18.41.02.png
     m = re.search(r'(\d{4})-(\d{2})-(\d{2})', filename)
     if m:
         try:
@@ -105,13 +116,31 @@ def extract_date(filename):
         except ValueError:
             pass
 
-    # Pattern 3: FB_IMG_1545742864733.jpg or 1531699202381.jpg (millisecond timestamp)
-    m = re.search(r'(\d{13})', filename)
+    # Pattern 3: FB_IMG_1545742864733.jpg or standalone timestamp files like 1531699202381.jpg
+    # Very restrictive - only matches specific prefixes or standalone timestamp files
+    m = re.search(r'(?:FB_IMG_|IMG_)(\d{9,13})(?=\.|_|$)', filename)
+    if not m:
+        # Try standalone timestamp files (entire filename is just digits + extension)
+        m = re.match(r'^(\d{9,13})\.(jpg|jpeg|png|mp4|mov|gif|bmp|tif|tiff|webm|avi|mkv)$', filename, re.IGNORECASE)
+    
     if m:
         try:
-            timestamp = int(m.group(1)[:10])
+            # For 13-digit numbers, assume milliseconds and take first 10 digits
+            # For 9-10 digit numbers, use as-is (seconds)
+            timestamp_str = m.group(1)
+            if len(timestamp_str) == 13:
+                timestamp = int(timestamp_str[:10])
+            else:
+                timestamp = int(timestamp_str)
+            
             dt = datetime.fromtimestamp(timestamp)
-            return dt, f"timestamp {timestamp}"
+            
+            # Validate timestamp is reasonable (from 1970 to current date)
+            now = datetime.now()
+            unix_epoch = datetime(1970, 1, 1)  # Beginning of Unix time
+            
+            if unix_epoch <= dt <= now:
+                return dt, f"timestamp {timestamp}"
         except (ValueError, OverflowError):
             pass
 
@@ -148,17 +177,6 @@ def extract_date(filename):
         try:
             dt = datetime.strptime(m.group(1) + m.group(2), '%Y%m%d%H%M%S')
             return dt, f"{m.group(1)} {m.group(2)}"
-        except ValueError:
-            pass
-            
-    # Pattern 8: 2020-01-01 12.30.59.jpg (format with date and time separated)
-    m = re.search(r'(\d{4})-(\d{2})-(\d{2}) (\d{2})\.(\d{2})\.(\d{2})', filename)
-    if m:
-        try:
-            date_part = f"{m.group(1)}{m.group(2)}{m.group(3)}"
-            time_part = f"{m.group(4)}{m.group(5)}{m.group(6)}"
-            dt = datetime.strptime(date_part + time_part, '%Y%m%d%H%M%S')
-            return dt, f"{date_part} {time_part}"
         except ValueError:
             pass
             
