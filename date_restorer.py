@@ -189,6 +189,54 @@ def extract_date(filename):
         except ValueError:
             pass
             
+    # Pattern 10: VideoCapture_20240513-155722.jpg
+    m = re.search(r'VideoCapture_(\d{8})-(\d{6})', filename)
+    if m:
+        try:
+            dt = datetime.strptime(m.group(1) + m.group(2), '%Y%m%d%H%M%S')
+            return dt, f"VideoCapture {m.group(1)} {m.group(2)}"
+        except ValueError:
+            pass
+
+    # Pattern 11: 1628085150288-52bceeb9-f9d1-45ec-bcef-c8e594921.jpg (Timestamp-UUID.jpg)
+    m = re.search(r'^(\d{13})-[\w-]+\.(jpg|jpeg|png|mp4|mov|gif|bmp|tif|tiff|webm|avi|mkv)$', filename, re.IGNORECASE)
+    if m:
+        try:
+            timestamp_str = m.group(1)
+            timestamp = int(timestamp_str[:10]) # Assume milliseconds, take first 10 digits for seconds
+            dt = datetime.fromtimestamp(timestamp)
+            # Validate timestamp is reasonable (from 1970 to current date)
+            now = datetime.now()
+            unix_epoch = datetime(1970, 1, 1)
+            if unix_epoch <= dt <= now:
+                return dt, f"timestamp {timestamp}"
+        except (ValueError, OverflowError):
+            pass
+
+    # Pattern 12: Picsart_22-09-05_08-32-31-010.jpg
+    m = re.search(r'Picsart_(\d{2})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})', filename)
+    if m:
+        try:
+            # Assuming YY is 20YY
+            date_str = f"20{m.group(1)}{m.group(2)}{m.group(3)}"
+            time_str = f"{m.group(4)}{m.group(5)}{m.group(6)}"
+            dt = datetime.strptime(date_str + time_str, '%Y%m%d%H%M%S')
+            return dt, f"Picsart {date_str} {time_str}"
+        except ValueError:
+            pass
+
+    # Pattern 13: CamScanner 10-30-2022 17.02.jpg or CamScanner 10-30-2022 17.02_1.jpg
+    m = re.search(r'CamScanner (\d{2})-(\d{2})-(\d{4}) (\d{2})\.(\d{2})(?:_\d+)?\.(jpg|jpeg|png|pdf)$', filename, re.IGNORECASE)
+    if m:
+        try:
+            # Format is MM-DD-YYYY HH.MM
+            date_str = f"{m.group(3)}{m.group(1)}{m.group(2)}" # YYYYMMDD
+            time_str = f"{m.group(4)}{m.group(5)}00" # HHMMSS (seconds default to 00)
+            dt = datetime.strptime(date_str + time_str, '%Y%m%d%H%M%S')
+            return dt, f"CamScanner {date_str} {time_str}"
+        except ValueError:
+            pass
+            
     return None, None
 
 def process_folder_recursively(root_path, dry_run=False, verbose=False, extensions=None):

@@ -74,6 +74,10 @@ The script identifies various common filename formats:
 - WhatsApp: `WhatsApp Image 2018-11-27 at 18.41.02.png`, `IMG-20181225-WA0014.jpg`
 - Screenshots: `Screenshot_20200101-151016_Calendar.jpg`
 - Unix timestamps: `FB_IMG_1545742864733.jpg`
+- VideoCapture: `VideoCapture_20240513-155722.jpg`
+- Timestamp-UUID: `1628085150288-52bceeb9-f9d1-45ec-bcef-c8e594921.jpg`
+- PicsArt: `Picsart_22-09-05_08-32-31-010.jpg`
+- CamScanner: `CamScanner 10-30-2022 17.02.jpg`, `CamScanner 10-30-2022 17.02_1.jpg`
 - And many other common patterns from smartphones and cameras
 
 ## Requirements
